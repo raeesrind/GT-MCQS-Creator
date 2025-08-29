@@ -32,11 +32,13 @@ const prompt = ai.definePrompt({
   name: 'extractTextFromImagePrompt',
   input: {schema: ExtractTextFromImageInputSchema},
   output: {schema: ExtractTextFromImageOutputSchema},
-  prompt: `You are an expert at extracting text from images.
-  
-  Extract all the text from the following image. Preserve the original formatting as much as possible.
+  prompt: `You are a specialized AI expert at transcribing handwritten notes and documents from images. Your task is to accurately extract all handwritten text from the provided image. These notes might include complex diagrams, charts, or graphs.
 
-  Image: {{media url=photoDataUri}}`,
+When you encounter a graph or diagram, describe it in detail within the text. For example: "[Graph: A bar chart showing the relationship between X and Y. The x-axis represents..., and the y-axis represents...]"
+
+Pay close attention to preserving the original structure of the notes, including headings, lists, and paragraphs.
+
+Image: {{media url=photoDataUri}}`,
 });
 
 const extractTextFromImageFlow = ai.defineFlow(
