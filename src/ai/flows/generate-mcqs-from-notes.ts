@@ -32,25 +32,30 @@ const prompt = ai.definePrompt({
   name: 'generateMCQsPrompt',
   input: {schema: GenerateMCQsInputSchema},
   output: {schema: GenerateMCQsOutputSchema},
-  prompt: `You are an expert educator specializing in generating challenging multiple-choice questions (MCQs).  The MCQs should be rephrased, indirect, and tricky, not exact sentences from the provided notes. Use only the content from the notes. Generate questions for the following subjects and number of questions:
+  prompt: `You are an expert educator specializing in generating challenging multiple-choice questions (MCQs) from potentially unstructured, handwritten notes. Your task is to generate tricky, indirect, and rephrased questions. Do not use exact sentences from the notes. You must generate questions based *only* on the content provided in the notes.
+
+Generate questions for the following subjects and quantities:
 
 Physics: {{{numPhysics}}}
 Chemistry: {{{numChemistry}}}
 Biology: {{{numBiology}}}
 English: {{{numEnglish}}}
 
-Notes: {{{notes}}}
+Here are the notes:
+--- NOTES START ---
+{{{notes}}}
+--- NOTES END ---
 
-Format each question as follows:
+It is crucial that you adhere to the following format for *every single question*. Do not add any extra text or titles.
 
 Question
 Option A
 Option B
 Option C
 Option D
-Correct Answer: [Letter] - [Short Explanation]
+Correct Answer: [Letter] - [A brief, clear explanation of why this is the correct answer]
 
-Ensure the options are shuffled to avoid memorization of the answer locations.
+Ensure the options are well-shuffled to avoid patterns. If the notes for a particular subject seem sparse, do your best to generate as many questions as possible based on the available information.
 `,
 });
 
