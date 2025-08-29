@@ -20,10 +20,10 @@ interface AppState {
 const AppContext = createContext<AppState | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
+  const [uploadedFiles, setUploadedFiles] = useLocalStorage<UploadedFile[]>('uploadedFiles', []);
   const [testResults, setTestResults] = useLocalStorage<TestResult[]>('testResults', []);
-  const [currentTest, setCurrentTest] = useState<ParsedMCQ[]>([]);
-  const [testType, setTestType] = useState<'Practice' | 'Grand' | null>(null);
+  const [currentTest, setCurrentTest] = useLocalStorage<ParsedMCQ[]>('currentTest', []);
+  const [testType, setTestType] = useLocalStorage<'Practice' | 'Grand' | null>('testType', null);
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -56,7 +56,11 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setTestType,
   };
 
-  return <AppContext.Provider value={value}>{isClient ? children : null}</AppContext.Provider>;
+  if (!isClient) {
+    return null;
+  }
+
+  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
 
 export function useApp() {
