@@ -19,7 +19,7 @@ if (typeof window !== 'undefined') {
 }
 
 interface FileWithSubject extends File {
-    subject?: Subject;
+    subject: Subject;
     size: number;
 }
 
@@ -32,11 +32,12 @@ export default function UploadArea() {
   const [parsingMessage, setParsingMessage] = useState('Parsing PDF...');
   const fileInputRef = useRef<HTMLInputElement>(null);
   
-  const onDrop = useCallback(async (acceptedFiles: FileWithSubject[]) => {
+  const onDrop = useCallback(async (acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (!file) return;
 
-    const fileWithSubject = { ...file, subject: selectedSubject };
+    const fileWithSubject = file as FileWithSubject;
+    fileWithSubject.subject = selectedSubject;
 
     setIsParsing(true);
 
@@ -123,7 +124,7 @@ export default function UploadArea() {
   }, [addFile, toast, selectedSubject]);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ 
-    onDrop, 
+    onDrop,
     noClick: true,
     noKeyboard: true,
     accept: { 'application/pdf': ['.pdf'] },
@@ -138,8 +139,7 @@ export default function UploadArea() {
 
   const handleManualUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
-        const file = event.target.files[0] as FileWithSubject;
-        onDrop([file]);
+        onDrop([event.target.files[0]]);
     }
   };
   
@@ -157,7 +157,7 @@ export default function UploadArea() {
             </CardHeader>
             <CardContent className="space-y-4">
                 <div {...getRootProps()} className={`relative flex flex-col items-center justify-center p-10 border-2 border-dashed rounded-lg transition-colors ${isDragActive ? 'border-primary bg-primary/10' : 'border-border'}`}>
-                    <input {...getInputProps()} ref={fileInputRef} id="manual-upload-input" className="hidden" type="file" onChange={handleManualUpload}/>
+                    <input {...getInputProps()} ref={fileInputRef} id="manual-upload-input" className="hidden" type="file" onChange={handleManualUpload} accept="application/pdf"/>
                     <UploadCloud className="w-12 h-12 text-muted-foreground" />
                     <p className="mt-4 text-center text-muted-foreground">
                         Drag & drop a PDF file here, or select a subject and click to upload.
@@ -200,17 +200,17 @@ export default function UploadArea() {
               <ul className="space-y-2">
                 {uploadedFiles.map(file => (
                   <li key={file.id} className="flex items-center justify-between p-3 bg-secondary rounded-lg">
-                    <div className="flex items-center gap-3">
-                      <File className="w-5 h-5 text-primary" />
-                      <div>
-                        <p className="font-medium">{file.name}</p>
+                    <div className="flex items-center gap-3 overflow-hidden">
+                      <File className="w-5 h-5 text-primary flex-shrink-0" />
+                      <div className="flex-grow overflow-hidden">
+                        <p className="font-medium truncate">{file.name}</p>
                         <div className="flex items-center gap-2">
                             <span className="text-sm text-muted-foreground">{file.subject}</span>
                             <span className="text-xs text-muted-foreground/80 bg-background/50 px-1.5 py-0.5 rounded-sm">{formatFileSize(file.size)}</span>
                         </div>
                       </div>
                     </div>
-                    <Button variant="ghost" size="icon" onClick={() => removeFile(file.id)}>
+                    <Button variant="ghost" size="icon" onClick={() => removeFile(file.id)} className="flex-shrink-0">
                       <X className="w-4 h-4" />
                     </Button>
                   </li>

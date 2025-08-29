@@ -59,7 +59,7 @@ export default function SubjectPerformanceChart({ data }: SubjectPerformanceChar
         <XAxis dataKey="subject" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
         <YAxis unit="%" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} domain={[0, 100]} />
         <Tooltip content={<CustomTooltip />} cursor={{ fill: 'hsl(var(--secondary))' }}/>
-        <Legend wrapperStyle={{fontSize: "14px"}}/>
+        <Legend wrapperStyle={{fontSize: "14px", paddingTop: "20px"}}/>
         <Bar dataKey="accuracy" name="Average Accuracy" fill="hsl(var(--primary))" radius={[4, 4, 0, 0]} barSize={40} />
       </BarChart>
     </ResponsiveContainer>

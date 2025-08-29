@@ -44,8 +44,14 @@ export default function DashboardLayout({
   const isMobile = useIsMobile();
 
   if (!isLoaded) {
-    return null; // or a loading spinner
+    return (
+      <div className="flex h-screen items-center justify-center">
+        {/* You can replace this with a proper skeleton loader */}
+        <p>Loading...</p>
+      </div>
+    );
   }
+
 
   return (
     <SidebarProvider>
@@ -79,7 +85,7 @@ export default function DashboardLayout({
         <header className="flex h-14 items-center gap-4 border-b bg-background/95 px-4 sm:px-6">
           <SidebarTrigger className="md:hidden" />
           <div className="flex-1">
-             <h1 className="text-lg font-semibold">
+             <h1 className="text-lg font-semibold md:text-xl">
                 {navItems.find(item => pathname.startsWith(item.href))?.label || 'Dashboard'}
              </h1>
           </div>

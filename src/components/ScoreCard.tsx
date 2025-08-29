@@ -49,23 +49,23 @@ export default function ScoreCard({ result }: ScoreCardProps) {
     <div className="w-full max-w-4xl mx-auto space-y-6">
       <Card className="text-center">
         <CardHeader>
-          <CardTitle className="text-3xl font-bold">Test Completed!</CardTitle>
+          <CardTitle className="text-2xl sm:text-3xl font-bold">Test Completed!</CardTitle>
           <CardDescription>Here's your performance summary for the {result.type} Test.</CardDescription>
         </CardHeader>
-        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <CardContent className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-secondary">
             <Award className="w-10 h-10 text-primary mb-2" />
-            <p className="text-3xl font-bold">{result.overall.percentage.toFixed(1)}%</p>
+            <p className="text-2xl sm:text-3xl font-bold">{result.overall.percentage.toFixed(1)}%</p>
             <p className="text-muted-foreground">Overall Score</p>
           </div>
           <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-secondary">
             <Target className="w-10 h-10 text-green-500 mb-2" />
-            <p className="text-3xl font-bold">{result.overall.correct}</p>
+            <p className="text-2xl sm:text-3xl font-bold">{result.overall.correct}</p>
             <p className="text-muted-foreground">Correct Answers</p>
           </div>
           <div className="flex flex-col items-center justify-center p-4 rounded-lg bg-secondary">
             <Book className="w-10 h-10 text-destructive mb-2" />
-            <p className="text-3xl font-bold">{result.overall.incorrect}</p>
+            <p className="text-2xl sm:text-3xl font-bold">{result.overall.incorrect}</p>
             <p className="text-muted-foreground">Incorrect Answers</p>
           </div>
         </CardContent>
@@ -77,9 +77,9 @@ export default function ScoreCard({ result }: ScoreCardProps) {
                 <CardTitle>Subject-wise Performance</CardTitle>
                 <CardDescription>Your accuracy in each subject.</CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="pl-0">
               <ResponsiveContainer width="100%" height={250}>
-                <BarChart data={chartData} margin={{ top: 20, right: 10, left: -10, bottom: 5 }}>
+                <BarChart data={chartData} margin={{ top: 20, right: 20, left: 0, bottom: 5 }}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="name" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
                   <YAxis unit="%" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} domain={[0, 100]} />

@@ -44,7 +44,7 @@ export default function OverallPerformanceChart({ data }: OverallPerformanceChar
         <XAxis dataKey="date" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} />
         <YAxis unit="%" stroke="#888888" fontSize={12} tickLine={false} axisLine={false} domain={[0, 100]} />
         <Tooltip content={<CustomTooltip />} />
-        <Legend wrapperStyle={{fontSize: "14px"}}/>
+        <Legend wrapperStyle={{fontSize: "14px", paddingTop: "20px"}}/>
         <Line
           type="monotone"
           dataKey="percentage"

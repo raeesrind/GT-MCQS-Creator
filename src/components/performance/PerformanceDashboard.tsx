@@ -15,10 +15,10 @@ export default function PerformanceDashboard() {
 
   if (testResults.length === 0) {
     return (
-      <div className="flex h-[60vh] flex-col items-center justify-center rounded-lg border-2 border-dashed">
+      <div className="flex h-[60vh] flex-col items-center justify-center rounded-lg border-2 border-dashed p-4 text-center">
         <FileQuestion className="w-16 h-16 text-muted-foreground mb-4" />
         <h2 className="text-2xl font-semibold">No Performance Data Yet</h2>
-        <p className="text-muted-foreground mt-2 mb-6">
+        <p className="text-muted-foreground mt-2 mb-6 max-w-sm">
           Complete a test to see your performance analysis here.
         </p>
         <Button onClick={() => router.push('/dashboard/practice')}>
@@ -36,41 +36,37 @@ export default function PerformanceDashboard() {
 
   return (
     <div className="space-y-6">
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <Card>
           <CardHeader>
-            <CardTitle>Total Tests</CardTitle>
-            <CardDescription>Number of tests taken.</CardDescription>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Tests</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold">{totalTests}</p>
+            <p className="text-2xl sm:text-3xl font-bold">{totalTests}</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Average Score</CardTitle>
-            <CardDescription>Average percentage across all tests.</CardDescription>
+             <CardTitle className="text-sm font-medium text-muted-foreground">Average Score</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold">{avgScore.toFixed(1)}%</p>
+            <p className="text-2xl sm:text-3xl font-bold">{avgScore.toFixed(1)}%</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Total Correct</CardTitle>
-            <CardDescription>Total correct answers.</CardDescription>
+             <CardTitle className="text-sm font-medium text-muted-foreground">Total Correct</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold text-green-600">{totalCorrect}</p>
+            <p className="text-2xl sm:text-3xl font-bold text-green-600">{totalCorrect}</p>
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Total Incorrect</CardTitle>
-            <CardDescription>Total incorrect answers.</CardDescription>
+            <CardTitle className="text-sm font-medium text-muted-foreground">Total Incorrect</CardTitle>
           </CardHeader>
           <CardContent>
-            <p className="text-4xl font-bold text-destructive">{totalIncorrect}</p>
+            <p className="text-2xl sm:text-3xl font-bold text-destructive">{totalIncorrect}</p>
           </CardContent>
         </Card>
       </div>
@@ -80,7 +76,7 @@ export default function PerformanceDashboard() {
           <CardTitle>Performance Trend</CardTitle>
           <CardDescription>Your overall test scores over time.</CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pl-0">
           <OverallPerformanceChart data={testResults} />
         </CardContent>
       </Card>
@@ -91,7 +87,7 @@ export default function PerformanceDashboard() {
             <CardTitle>Subject Performance</CardTitle>
             <CardDescription>Your average accuracy per subject.</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="pl-0">
             <SubjectPerformanceChart data={testResults} />
           </CardContent>
         </Card>
