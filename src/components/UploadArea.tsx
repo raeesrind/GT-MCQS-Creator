@@ -10,30 +10,31 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { UploadCloud, X, File, Loader2 } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { Progress } from '@/components/ui/progress';
+import { formatFileSize } from '@/lib/utils';
 
 // Set up the PDF.js worker
 if (typeof window !== 'undefined') {
-  pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.min.js`;
+  pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.mjs`;
 }
 
 interface FileWithSubject extends File {
     subject?: Subject;
+    size: number;
 }
 
 export default function UploadArea() {
   const { addFile, removeFile, uploadedFiles } = useApp();
+  const { toast } = useToast();
+  const [selectedSubject, setSelectedSubject] = useState<Subject>('Physics');
   const [isParsing, setIsParsing] = useState(false);
   const [parsingProgress, setParsingProgress] = useState(0);
-  const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [selectedSubject, setSelectedSubject] = useState<Subject>('Physics');
+  
 
   const onDrop = useCallback(async (acceptedFiles: FileWithSubject[]) => {
     const file = acceptedFiles[0];
     if (!file) return;
 
-    // This subject association is mainly for drag-and-drop.
-    // For manual selection, the subject is attached to the event handler.
     if(!file.subject) {
       file.subject = selectedSubject;
     }
@@ -57,7 +58,8 @@ export default function UploadArea() {
             id: `${file.name}-${Date.now()}`,
             name: file.name,
             subject: file.subject,
-            content
+            content,
+            size: file.size,
         };
 
         addFile(newFile);
@@ -113,7 +115,7 @@ export default function UploadArea() {
             </CardHeader>
             <CardContent className="space-y-4">
                 <div {...getRootProps()} className={`relative flex flex-col items-center justify-center p-10 border-2 border-dashed rounded-lg transition-colors ${isDragActive ? 'border-primary bg-primary/10' : 'border-border'}`}>
-                    <input {...getInputProps()} ref={fileInputRef} id="manual-upload-input" className="hidden" onChange={handleManualUpload}/>
+                    <input {...getInputProps({onChange: handleManualUpload})} ref={fileInputRef} id="manual-upload-input" className="hidden" />
                     <UploadCloud className="w-12 h-12 text-muted-foreground" />
                     <p className="mt-4 text-center text-muted-foreground">
                         Drag & drop a PDF file here, or select a subject and click to upload.
@@ -158,7 +160,10 @@ export default function UploadArea() {
                       <File className="w-5 h-5 text-primary" />
                       <div>
                         <p className="font-medium">{file.name}</p>
-                        <p className="text-sm text-muted-foreground">{file.subject}</p>
+                        <div className="flex items-center gap-2">
+                            <span className="text-sm text-muted-foreground">{file.subject}</span>
+                            <span className="text-xs text-muted-foreground/80 bg-background/50 px-1.5 py-0.5 rounded-sm">{formatFileSize(file.size)}</span>
+                        </div>
                       </div>
                     </div>
                     <Button variant="ghost" size="icon" onClick={() => removeFile(file.id)}>

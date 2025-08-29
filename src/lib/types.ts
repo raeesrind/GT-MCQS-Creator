@@ -7,6 +7,7 @@ export interface UploadedFile {
   name: string;
   subject: Subject;
   content: string;
+  size: number;
 }
 
 export interface MCQ {
