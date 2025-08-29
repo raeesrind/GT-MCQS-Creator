@@ -24,6 +24,12 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [testResults, setTestResults] = useLocalStorage<TestResult[]>('testResults', []);
   const [currentTest, setCurrentTest] = useState<ParsedMCQ[]>([]);
   const [testType, setTestType] = useState<'Practice' | 'Grand' | null>(null);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
 
   const addFile = (file: UploadedFile) => {
     setUploadedFiles((prev) => [...prev.filter(f => f.subject !== file.subject), file]);
@@ -50,7 +56,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setTestType,
   };
 
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+  return <AppContext.Provider value={value}>{isClient ? children : null}</AppContext.Provider>;
 }
 
 export function useApp() {
