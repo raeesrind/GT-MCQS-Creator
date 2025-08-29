@@ -1,7 +1,7 @@
 'use client';
 import * as pdfjs from 'pdfjs-dist';
 import { useDropzone } from 'react-dropzone';
-import { useCallback, useState, useEffect } from 'react';
+import { useCallback, useState, useEffect, useRef } from 'react';
 import { useApp } from '@/providers/app-provider';
 import { ALL_SUBJECTS, type Subject, type UploadedFile } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -25,21 +25,18 @@ export default function UploadArea() {
   const [isParsing, setIsParsing] = useState(false);
   const [parsingProgress, setParsingProgress] = useState(0);
   const { toast } = useToast();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const onDrop = useCallback(async (acceptedFiles: FileWithSubject[]) => {
     const file = acceptedFiles[0];
     if (!file) return;
 
-    if (file.type !== 'application/pdf') {
-        toast({
-            title: 'Invalid File Type',
-            description: 'Please upload a PDF file.',
-            variant: 'destructive'
-        });
-        return;
+    // This subject association is mainly for drag-and-drop.
+    // For manual selection, the subject is attached to the event handler.
+    if(!file.subject) {
+      file.subject = selectedSubject;
     }
 
-    const subject = file.subject || 'Physics'; // Default subject if not set
     setIsParsing(true);
     setParsingProgress(0);
 
@@ -58,7 +55,7 @@ export default function UploadArea() {
         const newFile: UploadedFile = {
             id: `${file.name}-${Date.now()}`,
             name: file.name,
-            subject,
+            subject: file.subject,
             content
         };
 
@@ -78,10 +75,26 @@ export default function UploadArea() {
     } finally {
         setIsParsing(false);
         setParsingProgress(0);
+        // Reset file input
+        if (fileInputRef.current) {
+            fileInputRef.current.value = '';
+        }
     }
-  }, [addFile, toast]);
+  }, [addFile, toast, selectedSubject]);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, noClick: true });
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({ 
+    onDrop, 
+    noClick: true,
+    noKeyboard: true,
+    accept: { 'application/pdf': ['.pdf'] },
+    onDropRejected: () => {
+        toast({
+            title: 'Invalid File Type',
+            description: 'Please upload a PDF file.',
+            variant: 'destructive'
+        });
+    }
+  });
 
   const [selectedSubject, setSelectedSubject] = useState<Subject>('Physics');
 
@@ -101,7 +114,7 @@ export default function UploadArea() {
             </CardHeader>
             <CardContent className="space-y-4">
                 <div {...getRootProps()} className={`relative flex flex-col items-center justify-center p-10 border-2 border-dashed rounded-lg transition-colors ${isDragActive ? 'border-primary bg-primary/10' : 'border-border'}`}>
-                    <input {...getInputProps()} id="manual-upload-input" className="hidden" onChange={handleManualUpload}/>
+                    <input {...getInputProps()} ref={fileInputRef} id="manual-upload-input" className="hidden" onChange={handleManualUpload}/>
                     <UploadCloud className="w-12 h-12 text-muted-foreground" />
                     <p className="mt-4 text-center text-muted-foreground">
                         Drag & drop a PDF file here, or select a subject and click to upload.
@@ -126,8 +139,8 @@ export default function UploadArea() {
                             ))}
                         </SelectContent>
                     </Select>
-                    <Button asChild className="w-full sm:w-auto">
-                      <label htmlFor="manual-upload-input">Choose File</label>
+                    <Button onClick={open} className="w-full sm:w-auto">
+                        Choose File
                     </Button>
                 </div>
             </CardContent>
