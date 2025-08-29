@@ -21,15 +21,12 @@ interface AppState {
 const AppContext = createContext<AppState | undefined>(undefined);
 
 export function AppProvider({ children }: { children: ReactNode }) {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const [uploadedFiles, setUploadedFiles] = useLocalStorage<UploadedFile[]>('uploadedFiles', []);
-  const [testResults, setTestResults] = useLocalStorage<TestResult[]>('testResults', []);
-  const [currentTest, setCurrentTest] = useLocalStorage<ParsedMCQ[]>('currentTest', []);
-  const [testType, setTestType] = useLocalStorage<'Practice' | 'Grand' | null>('testType', null);
+  const [uploadedFiles, setUploadedFiles, filesLoaded] = useLocalStorage<UploadedFile[]>('uploadedFiles', []);
+  const [testResults, setTestResults, resultsLoaded] = useLocalStorage<TestResult[]>('testResults', []);
+  const [currentTest, setCurrentTest, testLoaded] = useLocalStorage<ParsedMCQ[]>('currentTest', []);
+  const [testType, setTestType, typeLoaded] = useLocalStorage<'Practice' | 'Grand' | null>('testType', null);
 
-  useEffect(() => {
-    setIsLoaded(true);
-  }, []);
+  const isLoaded = filesLoaded && resultsLoaded && testLoaded && typeLoaded;
 
   const addFile = (file: UploadedFile) => {
     setUploadedFiles((prev) => [...prev.filter(f => f.subject !== file.subject), file]);
@@ -56,10 +53,6 @@ export function AppProvider({ children }: { children: ReactNode }) {
     testType,
     setTestType,
   };
-  
-  if (!isLoaded) {
-    return null;
-  }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
