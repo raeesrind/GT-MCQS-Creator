@@ -1,7 +1,7 @@
 'use client';
 import * as pdfjs from 'pdfjs-dist';
 import { useDropzone } from 'react-dropzone';
-import { useCallback, useState, useEffect, useRef } from 'react';
+import { useCallback, useState, useRef } from 'react';
 import { useApp } from '@/providers/app-provider';
 import { ALL_SUBJECTS, type Subject, type UploadedFile } from '@/lib/types';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -26,6 +26,7 @@ export default function UploadArea() {
   const [parsingProgress, setParsingProgress] = useState(0);
   const { toast } = useToast();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [selectedSubject, setSelectedSubject] = useState<Subject>('Physics');
 
   const onDrop = useCallback(async (acceptedFiles: FileWithSubject[]) => {
     const file = acceptedFiles[0];
@@ -95,8 +96,6 @@ export default function UploadArea() {
         });
     }
   });
-
-  const [selectedSubject, setSelectedSubject] = useState<Subject>('Physics');
 
   const handleManualUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files && event.target.files[0]) {
