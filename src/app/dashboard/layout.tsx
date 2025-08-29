@@ -40,8 +40,12 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { uploadedFiles } = useApp();
+  const { isLoaded, uploadedFiles } = useApp();
   const isMobile = useIsMobile();
+
+  if (!isLoaded) {
+    return null; // or a loading spinner
+  }
 
   return (
     <SidebarProvider>
