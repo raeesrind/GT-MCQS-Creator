@@ -56,6 +56,10 @@ export function AppProvider({ children }: { children: ReactNode }) {
     testType,
     setTestType,
   };
+  
+  if (!isLoaded) {
+    return null;
+  }
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
 }
