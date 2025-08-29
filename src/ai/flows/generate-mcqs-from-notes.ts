@@ -11,7 +11,7 @@ import {ai} from '@/ai/genkit';
 import {z} from 'genkit';
 
 const GenerateMCQsInputSchema = z.object({
-  notes: z.string().describe('The notes to generate MCQs from.'),
+  notes: z.string().describe('The notes to generate MCQs from. Can include specific topics like "Thermodynamics" or "Genetics".'),
   numPhysics: z.number().describe('The number of Physics MCQs to generate.').default(0),
   numChemistry: z.number().describe('The number of Chemistry MCQs to generate.').default(0),
   numBiology: z.number().describe('The number of Biology MCQs to generate.').default(0),
@@ -32,7 +32,7 @@ const prompt = ai.definePrompt({
   name: 'generateMCQsPrompt',
   input: {schema: GenerateMCQsInputSchema},
   output: {schema: GenerateMCQsOutputSchema},
-  prompt: `You are an AI that generates exam-style multiple-choice questions (MCQs) from extracted study material. Your task is to generate tricky, indirect, and rephrased questions based *only* on the content provided in the notes.
+  prompt: `You are an AI that generates exam-style multiple-choice questions (MCQs) from extracted study material. Your task is to generate tricky, indirect, and rephrased questions based *only* on the content provided in the notes. If a specific topic (e.g., Thermodynamics, Genetics) is mentioned, all questions should be from that topic.
 
 Generate questions for the following subjects and quantities:
 
