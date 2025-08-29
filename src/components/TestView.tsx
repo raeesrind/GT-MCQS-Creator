@@ -11,6 +11,7 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import ScoreCard from './ScoreCard';
 import { Loader2 } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 export default function TestView() {
   const { currentTest, testType, addTestResult, uploadedFiles } = useApp();
@@ -19,6 +20,7 @@ export default function TestView() {
   const [isFinished, setIsFinished] = useState(false);
   const [finalResult, setFinalResult] = useState<TestResult | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { toast } = useToast();
 
   const currentMCQ = useMemo(() => currentTest[currentQuestionIndex], [currentTest, currentQuestionIndex]);
 
@@ -70,7 +72,20 @@ export default function TestView() {
       testHistoryString += `Q${index+1} (${subject}): ${userAnswers[index] === mcq.correctAnswer ? 'Correct' : 'Incorrect'}. Correct was ${mcq.correctAnswer}. My answer: ${userAnswers[index]}. \n`;
     });
 
-    const weakestTopics = await suggestWeakestTopics({ testHistory: testHistoryString });
+    let suggestedTopics = '';
+    try {
+      const result = await suggestWeakestTopics({ testHistory: testHistoryString });
+      suggestedTopics = result.weakestTopics;
+    } catch (error) {
+      console.error("Failed to get topic suggestions:", error);
+      toast({
+        title: 'Could not get AI suggestions',
+        description: 'There was an issue contacting the AI for topic suggestions. You can still see your score.',
+        variant: 'destructive',
+      });
+      // Continue without suggestions
+    }
+
 
     const totalQuestions = currentTest.length;
     const score = correctCount;
@@ -98,7 +113,7 @@ export default function TestView() {
       type: testType || 'Practice',
       results: finalSubjectResults,
       overall: { score, correct: correctCount, incorrect, percentage },
-      weakestTopics: weakestTopics.weakestTopics,
+      weakestTopics: suggestedTopics,
     };
     
     addTestResult(result);
