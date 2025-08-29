@@ -3,8 +3,9 @@
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react';
 import type { UploadedFile, TestResult, ParsedMCQ } from '@/lib/types';
 import useLocalStorage from '@/hooks/use-local-storage';
+import ClientOnly from '@/components/ClientOnly';
 
-interface AppState {
+interface AppContextValue {
   isLoaded: boolean;
   uploadedFiles: UploadedFile[];
   setUploadedFiles: (files: UploadedFile[]) => void;
@@ -18,9 +19,9 @@ interface AppState {
   setTestType: (type: 'Practice' | 'Grand' | null) => void;
 }
 
-const AppContext = createContext<AppState | undefined>(undefined);
+const AppContext = createContext<AppContextValue | undefined>(undefined);
 
-export function AppProvider({ children }: { children: ReactNode }) {
+function AppProviderContent({ children }: { children: ReactNode }) {
   const [uploadedFiles, setUploadedFiles, filesLoaded] = useLocalStorage<UploadedFile[]>('uploadedFiles', []);
   const [testResults, setTestResults, resultsLoaded] = useLocalStorage<TestResult[]>('testResults', []);
   const [currentTest, setCurrentTest, testLoaded] = useLocalStorage<ParsedMCQ[]>('currentTest', []);
@@ -54,7 +55,20 @@ export function AppProvider({ children }: { children: ReactNode }) {
     setTestType,
   };
 
-  return <AppContext.Provider value={value}>{children}</AppContext.Provider>;
+  return (
+    <AppContext.Provider value={value}>
+      {children}
+    </AppContext.Provider>
+  );
+}
+
+
+export function AppProvider({ children }: { children: ReactNode }) {
+  return (
+    <ClientOnly>
+      <AppProviderContent>{children}</AppProviderContent>
+    </ClientOnly>
+  )
 }
 
 export function useApp() {
