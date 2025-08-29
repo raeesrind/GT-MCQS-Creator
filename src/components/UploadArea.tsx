@@ -36,16 +36,14 @@ export default function UploadArea() {
     const file = acceptedFiles[0];
     if (!file) return;
 
-    if(!file.subject) {
-      file.subject = selectedSubject;
-    }
+    const fileWithSubject = { ...file, subject: selectedSubject };
 
     setIsParsing(true);
 
     try {
         setParsingMessage('Reading PDF file...');
         setParsingProgress(10);
-        const arrayBuffer = await file.arrayBuffer();
+        const arrayBuffer = await fileWithSubject.arrayBuffer();
         const pdf = await pdfjs.getDocument(arrayBuffer).promise;
         let content = '';
 
@@ -80,7 +78,9 @@ export default function UploadArea() {
         for(let i = 0; i < imageDataUris.length; i++) {
             const dataUri = imageDataUris[i];
             const result = await extractTextFromImage({ photoDataUri: dataUri });
-            extractedTexts.push(result.text);
+            if (result?.text) {
+              extractedTexts.push(result.text);
+            }
             const progress = 50 + Math.round(((i+1) / imageDataUris.length) * 50);
             setParsingProgress(progress);
         }
@@ -92,17 +92,17 @@ export default function UploadArea() {
         }
         
         const newFile: UploadedFile = {
-            id: `${file.name}-${Date.now()}`,
-            name: file.name,
-            subject: file.subject,
+            id: `${fileWithSubject.name}-${Date.now()}`,
+            name: fileWithSubject.name,
+            subject: fileWithSubject.subject,
             content,
-            size: file.size,
+            size: fileWithSubject.size,
         };
 
         addFile(newFile);
         toast({
             title: 'File Uploaded',
-            description: `${file.name} has been processed and added.`
+            description: `${fileWithSubject.name} has been processed and added.`
         });
 
     } catch (error: any) {
