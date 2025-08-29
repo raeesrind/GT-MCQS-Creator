@@ -12,15 +12,16 @@ export function parseMCQs(mcqStrings: string[]): MCQ[] {
 
   for (const mcqString of mcqStrings) {
     // Handle cases where multiple questions are bundled in one string
-    const questions = mcqString.split('Question:').filter(q => q.trim());
+    const questions = mcqString.split(/Question:/).filter(q => q.trim());
     
     for (const singleQuestion of questions) {
       const lines = singleQuestion.trim().split('\n').filter(line => line.trim() !== '');
       if (lines.length < 6) continue;
 
       try {
-        const question = lines[0].startsWith('Question:') ? lines[0].substring(9).trim() : lines[0].trim();
-        const options = lines.slice(1, 5).map(opt => opt.replace(/^[A-D][\)\.]\s*/, '').trim());
+        const question = lines[0].trim();
+        // Options are expected in format "A; <text>" or "A: <text>" or "A. <text>" or "A) <text>"
+        const options = lines.slice(1, 5).map(opt => opt.replace(/^[A-D][\);\:\.]\s*/, '').trim());
         const answerLine = lines.slice(5).join('\n');
         
         const answerMatch = answerLine.match(/Correct Answer:.*?\[?(A|B|C|D)\]?\s*-\s*(.*)/is);

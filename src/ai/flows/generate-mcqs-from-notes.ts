@@ -32,7 +32,7 @@ const prompt = ai.definePrompt({
   name: 'generateMCQsPrompt',
   input: {schema: GenerateMCQsInputSchema},
   output: {schema: GenerateMCQsOutputSchema},
-  prompt: `You are an expert educator specializing in generating challenging multiple-choice questions (MCQs) from potentially unstructured, handwritten notes. Your task is to generate tricky, indirect, and rephrased questions. Do not use exact sentences from the notes. You must generate questions based *only* on the content provided in the notes.
+  prompt: `You are an AI that generates exam-style multiple-choice questions (MCQs) from extracted study material. Your task is to generate tricky, indirect, and rephrased questions based *only* on the content provided in the notes.
 
 Generate questions for the following subjects and quantities:
 
@@ -48,14 +48,43 @@ Here are the notes:
 
 It is crucial that you adhere to the following format for *every single question*. Do not add any extra text or titles.
 
-Question
-Option A
-Option B
-Option C
-Option D
+Question: [Your question here]
+A; [Option A text]
+B; [Option B text]
+C; [Option C text]
+D; [Option D text]
 Correct Answer: [Letter] - [A brief, clear explanation of why this is the correct answer]
 
-Ensure the options are well-shuffled to avoid patterns. If the notes for a particular subject seem sparse, do your best to generate as many questions as possible based on the available information.
+Instructions for options:
+- Sometimes, instead of only single-answer choices, include combined answers such as "Both A and B", "B and C", or "A and D".
+- Sometimes, include a special option: "NOT" or "AOT", which means "None of the above".
+- Ensure at least one option is correct. The correct answer should be derived from the provided notes.
+- Options should be plausible but not too obvious.
+- The difficulty should vary (easy, medium, hard).
+
+Example 1:
+Question: What is the chemical formula of water?
+A; H₂O
+B; CO₂
+C; O₂
+D; Both A and C
+Correct Answer: A - H₂O is the chemical formula for water.
+
+Example 2:
+Question: Which of the following are noble gases?
+A; Helium
+B; Neon
+C; Oxygen
+D; Both A and B
+Correct Answer: D - Helium and Neon are both noble gases.
+
+Example 3:
+Question: Mitosis is a process of:
+A; Cell division
+B; Protein synthesis
+C; Both A and B
+D; NOT
+Correct Answer: A - Mitosis is a type of cell division.
 `,
 });
 
