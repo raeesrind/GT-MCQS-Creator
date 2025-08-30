@@ -111,6 +111,8 @@ export default function TestView() {
       id: `test-${Date.now()}`,
       date: new Date().toISOString(),
       type: testType || 'Practice',
+      mcqs: currentTest,
+      userAnswers: userAnswers,
       results: finalSubjectResults,
       overall: { score, correct: correctCount, incorrect, percentage },
       weakestTopics: suggestedTopics,
@@ -147,10 +149,9 @@ export default function TestView() {
         <RadioGroup value={userAnswers[currentQuestionIndex]} onValueChange={handleAnswerSelect}>
           {currentMCQ.options.map((option, index) => (
             <div key={index} className="flex items-center space-x-3 p-3 rounded-lg border has-[[data-state=checked]]:border-primary has-[[data-state=checked]]:bg-primary/5">
-              <RadioGroupItem value={option} id={`option-${index}`} />
+              <RadioGroupItem value={option} id={`option-${index}`} className="hidden" />
               <Label htmlFor={`option-${index}`} className="flex-1 cursor-pointer text-base flex items-center gap-3">
-                 <span className="font-bold text-primary/80">{optionLetters[index]}</span>
-                 <span>{option}</span>
+                 <span>{optionLetters[index]}) {option}</span>
               </Label>
             </div>
           ))}

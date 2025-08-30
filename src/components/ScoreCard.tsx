@@ -16,6 +16,7 @@ import {
   ResponsiveContainer,
   LabelList,
 } from 'recharts';
+import ReviewView from './ReviewView';
 
 interface ScoreCardProps {
   result: TestResult;
@@ -115,6 +116,8 @@ export default function ScoreCard({ result }: ScoreCardProps) {
             </CardContent>
         </Card>
       </div>
+      
+      <ReviewView mcqs={result.mcqs} userAnswers={result.userAnswers} />
 
       <div className="text-center">
         <Button onClick={() => router.push('/dashboard/performance')}>View Detailed Performance</Button>

@@ -26,6 +26,8 @@ export interface TestResult {
   id: string;
   date: string;
   type: 'Practice' | 'Grand';
+  mcqs: ParsedMCQ[];
+  userAnswers: (string | undefined)[];
   results: SubjectResult[];
   overall: {
     score: number;
