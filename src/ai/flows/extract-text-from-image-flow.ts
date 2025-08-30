@@ -32,7 +32,6 @@ const prompt = ai.definePrompt({
   name: 'extractTextFromImagePrompt',
   input: {schema: ExtractTextFromImageInputSchema},
   output: {schema: ExtractTextFromImageOutputSchema},
-  model: 'googleai/gemini-2.5-pro',
   prompt: `You are a specialized AI expert at transcribing handwritten notes and documents from images. Your task is to accurately extract all handwritten text from the provided image. These notes might include complex diagrams, charts, or graphs.
 
 When you encounter a graph or diagram, describe it in detail within the text. For example: "[Graph: A bar chart showing the relationship between X and Y. The x-axis represents..., and the y-axis represents...]"
